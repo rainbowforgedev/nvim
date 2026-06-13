@@ -9,11 +9,15 @@
 vim.keymap.set("n", "<Esc><Esc>", "i", { noremap = true })
 
 --Make i up and such.
-vim.keymap.set({ "n", "v", "o" }, "i", "k", { noremap = true }) -- i = up
-vim.keymap.set({ "n", "v", "o" }, "j", "h", { noremap = true }) -- j = left
-vim.keymap.set({ "n", "v", "o" }, "k", "j", { noremap = true }) -- k = down
-vim.keymap.set({ "n", "v", "o" }, "l", "l", { noremap = true }) -- l = right
+vim.keymap.set({ "n", "v" }, "i", "k", { noremap = true }) -- i = up
+vim.keymap.set({ "n", "v" }, "j", "h", { noremap = true }) -- j = left
+vim.keymap.set({ "n", "v" }, "k", "j", { noremap = true }) -- k = down
+vim.keymap.set({ "n", "v" }, "l", "l", { noremap = true }) -- l = right
 
+-- trying to figure out a better operator mode mapping
+
+vim.keymap.set("o", "j", "k", { noremap = true }) -- j = up
+vim.keymap.set("o", "k", "j", { noremap = true }) -- k = down
 -- Set up new Alt+i and Alt+k
 
 vim.keymap.del({ "n", "v" }, "<A-j>")
@@ -36,6 +40,8 @@ vim.keymap.set("n", "b", "q", { noremap = true })
 --Replace Control R for redo.
 vim.keymap.set("n", "U", "<C-r>", { noremap = true })
 vim.keymap.set("n", "<A-u>", "U", { noremap = true })
+vim.keymap.set("n", "<A-u>", "U", { noremap = true })
+--Replace shift E for WORD forwards and Q for back and do line navigation instead.
 --Replace shift E for WORD forwards and Q for back and do line navigation instead.
 vim.keymap.set({ "n", "v", "o" }, "E", "$", { noremap = true }) -- E = end of line
 vim.keymap.set({ "n", "v", "o" }, "Q", "^", { noremap = true }) -- Q = start of line
@@ -58,17 +64,32 @@ vim.api.nvim_set_keymap("i", "<C-H>", "<C-W>", { noremap = true })
 
 vim.api.nvim_set_keymap("n", "<C-H>", "db", { noremap = true })
 
---neogit keymap
-vim.keymap.set("n", "<leader>gng", "<cmd>Neogit<cr>", { desc = "Open Neogit UI" })
+--neogit keymap this was redundant so I am ocmmenting it out.
+--vim.keymap.set("n", "<leader>gng", "<cmd>Neogit<cr>", { desc = "Open Neogit UI" })
+
+-- mapping control+y to yank entire file
+vim.keymap.set({ "n", "v", "o" }, "<C-y>", ":%y+<CR>", { noremap = true })
+
+-- including in insert mode.
+vim.keymap.set("i", "<C-y>", "<Esc>:%y+<CR>a", { noremap = true })
+
+-- and command line mode
+vim.keymap.set("c", "<C-y>", "<C-u>:%y+<CR>", { noremap = true })
+
+--and terminal mode.
+vim.keymap.set("t", "<C-y>", "<C-\\><C-n>:%y+<CR>i", { noremap = true })
+
+--colorconverter keybind
+vim.keymap.set("n", "<leader>zcc", function()
+  require("color-converter").cycle()
+end, { desc = "Cycle Color Converter" })
 
 -- WhichKey registration
 local wk = require("which-key")
 wk.add({
-  { "i", desc = "Up", mode = { "n", "v", "o" } },
-  { "j", desc = "Left", mode = { "n", "v", "o" } },
+
+  { "j", desc = "Up", mode = { "n", "v", "o" } },
   { "k", desc = "Down", mode = { "n", "v", "o" } },
-  { "l", desc = "Right", mode = { "n", "v", "o" } },
-  { "h", desc = "Insert", mode = "n" },
   { "H", desc = "Insert at line start", mode = "n" },
   { "q", desc = "Word backward", mode = { "n", "v", "o" } },
   { "b", desc = "Record macro", mode = "n" },
